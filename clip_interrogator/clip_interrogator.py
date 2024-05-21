@@ -37,6 +37,7 @@ class Config:
     # blip settings
     caption_max_length: int = 32
     caption_model_name: Optional[str] = 'blip-large' # use a key from CAPTION_MODELS or None
+    caption_model_path: Optional[str] = None  # Add this field for local caption model path
     caption_offload: bool = False
 
     # clip settings
@@ -75,7 +76,9 @@ class Interrogator():
             if not self.config.quiet:
                 print(f"Loading caption model {self.config.caption_model_name}...")
 
-            model_path = CAPTION_MODELS[self.config.caption_model_name]
+            # Use the local path if provided, otherwise use the predefined model path
+            model_path = self.config.caption_model_path if self.config.caption_model_path else CAPTION_MODELS[
+                self.config.caption_model_name]
             if self.config.caption_model_name.startswith('git-'):
                 caption_model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float32)
             elif self.config.caption_model_name.startswith('blip2-'):
