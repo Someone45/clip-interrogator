@@ -43,6 +43,7 @@ class Config:
     # clip settings
     clip_model_name: str = 'ViT-L-14/openai'
     clip_model_path: Optional[str] = None
+    clip_model_pretrained_path: Optional[str] = None
     clip_offload: bool = False
 
     # interrogator settings
@@ -107,11 +108,11 @@ class Interrogator():
 
             self.clip_model, _, self.clip_preprocess = open_clip.create_model_and_transforms(
                 clip_model_name, 
-                pretrained=config.clip_model_path,
+                pretrained=config.clip_model_pretrained_path,
                 precision='fp16' if config.device == 'cuda' else 'fp32',
                 device=config.device,
                 jit=False,
-                # cache_dir=config.clip_model_path
+                cache_dir=config.clip_model_path
             )
             self.clip_model.eval()
         else:
